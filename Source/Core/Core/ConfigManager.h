@@ -140,6 +140,7 @@ struct SConfig
   float fSyncGpuOverclock;
 
   int SelectedLanguage = 0;
+  int FallbackRegion = 2;
   bool bOverrideRegionSettings = false;
 
   bool bWii = false;

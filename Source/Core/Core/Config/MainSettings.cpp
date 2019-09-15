@@ -71,6 +71,7 @@ ConfigInfo<bool> GetInfoForSimulateKonga(u32 channel)
   return {{System::Main, "Core", StringFromFormat("SimulateKonga%u", channel)}, false};
 }
 
+const ConfigInfo<int> MAIN_WII_FALLBACK_REGION{{System::Main, "Core", "WiiFallbackRegion"}, 2};
 const ConfigInfo<bool> MAIN_WII_SD_CARD{{System::Main, "Core", "WiiSDCard"}, false};
 const ConfigInfo<bool> MAIN_WII_SD_CARD_WRITABLE{{System::Main, "Core", "WiiSDCardWritable"}, true};
 const ConfigInfo<bool> MAIN_WII_KEYBOARD{{System::Main, "Core", "WiiKeyboard"}, false};

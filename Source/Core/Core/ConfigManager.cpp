@@ -4,6 +4,7 @@
 
 #include "Core/ConfigManager.h"
 
+#include <Core/Config/MainSettings.h>
 #include <cinttypes>
 #include <climits>
 #include <memory>
@@ -211,6 +212,7 @@ void SConfig::SaveCoreSettings(IniFile& ini)
   core->Set("AccurateNaNs", bAccurateNaNs);
   core->Set("EnableCheats", bEnableCheats);
   core->Set("SelectedLanguage", SelectedLanguage);
+  core->Set("WiiFallbackRegion", FallbackRegion);
   core->Set("OverrideRegionSettings", bOverrideRegionSettings);
   core->Set("DPL2Decoder", bDPL2Decoder);
   core->Set("AudioLatency", iLatency);
@@ -485,6 +487,7 @@ void SConfig::LoadCoreSettings(IniFile& ini)
   core->Get("SyncOnSkipIdle", &bSyncGPUOnSkipIdleHack, true);
   core->Get("EnableCheats", &bEnableCheats, false);
   core->Get("SelectedLanguage", &SelectedLanguage, 0);
+  core->Get("WiiFallbackRegion", &FallbackRegion, 2);
   core->Get("OverrideRegionSettings", &bOverrideRegionSettings, false);
   core->Get("DPL2Decoder", &bDPL2Decoder, false);
   core->Get("AudioLatency", &iLatency, 20);
@@ -969,6 +972,11 @@ DiscIO::Region SConfig::GetFallbackRegion()
     if (region != DiscIO::Region::Unknown)
       return region;
   }
+
+  // Fall back to config option
+  int fallback_region = Config::Get(Config::MAIN_WII_FALLBACK_REGION);
+  if (fallback_region != 3)
+    return DiscIO::Region(fallback_region);
 
   // Fall back to PAL.
   return DiscIO::Region::PAL;

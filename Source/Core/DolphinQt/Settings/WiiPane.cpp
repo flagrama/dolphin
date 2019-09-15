@@ -19,6 +19,7 @@
 #include "Common/Config/Config.h"
 #include "Common/StringUtil.h"
 
+#include "Core/Config/MainSettings.h"
 #include "Core/Config/SYSCONFSettings.h"
 #include "Core/ConfigManager.h"
 #include "Core/Core.h"
@@ -67,6 +68,9 @@ void WiiPane::ConnectLayout()
           static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this,
           &WiiPane::OnSaveConfig);
   connect(m_system_language_choice,
+          static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this,
+          &WiiPane::OnSaveConfig);
+  connect(m_system_region_fallback,
           static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this,
           &WiiPane::OnSaveConfig);
   connect(m_screensaver_checkbox, &QCheckBox::toggled, this, &WiiPane::OnSaveConfig);
@@ -120,6 +124,12 @@ void WiiPane::CreateMisc()
   m_system_language_choice->addItem(tr("Simplified Chinese"));
   m_system_language_choice->addItem(tr("Traditional Chinese"));
   m_system_language_choice->addItem(tr("Korean"));
+  m_system_region_fallback_label = new QLabel(tr("System Region Fallback:"));
+  m_system_region_fallback = new QComboBox();
+  m_system_region_fallback->addItem(tr("NTSC-J"));
+  m_system_region_fallback->addItem(tr("NTSC-U"));
+  m_system_region_fallback->addItem(tr("PAL"));
+  m_system_region_fallback->addItem(tr("NTSC-K"));
 
   m_pal60_mode_checkbox->setToolTip(tr("Sets the Wii display mode to 60Hz (480i) instead of 50Hz "
                                        "(576i) for PAL games.\nMay not work for all games."));
@@ -136,6 +146,8 @@ void WiiPane::CreateMisc()
   misc_settings_group_layout->addWidget(m_aspect_ratio_choice, 2, 1, 1, 1);
   misc_settings_group_layout->addWidget(m_system_language_choice_label, 3, 0, 1, 1);
   misc_settings_group_layout->addWidget(m_system_language_choice, 3, 1, 1, 1);
+  misc_settings_group_layout->addWidget(m_system_region_fallback_label, 4, 0, 1, 1);
+  misc_settings_group_layout->addWidget(m_system_region_fallback, 4, 1, 1, 1);
 }
 
 void WiiPane::CreateWhitelistedUSBPassthroughDevices()
@@ -218,6 +230,10 @@ void WiiPane::LoadConfig()
   m_wiimote_ir_sensitivity->setValue(Config::Get(Config::SYSCONF_SENSOR_BAR_SENSITIVITY));
   m_wiimote_speaker_volume->setValue(Config::Get(Config::SYSCONF_SPEAKER_VOLUME));
   m_wiimote_motor->setChecked(Config::Get(Config::SYSCONF_WIIMOTE_MOTOR));
+  int fallback_region_index = Config::Get(Config::MAIN_WII_FALLBACK_REGION);
+  if (fallback_region_index > 2)
+    fallback_region_index = 3;
+  m_system_region_fallback->setCurrentIndex(fallback_region_index);
 }
 
 void WiiPane::OnSaveConfig()
@@ -236,6 +252,10 @@ void WiiPane::OnSaveConfig()
   Config::SetBase<u32>(Config::SYSCONF_LANGUAGE, m_system_language_choice->currentIndex());
   Config::SetBase<bool>(Config::SYSCONF_WIDESCREEN, m_aspect_ratio_choice->currentIndex());
   Config::SetBase(Config::SYSCONF_WIIMOTE_MOTOR, m_wiimote_motor->isChecked());
+  int fallback_region_value = m_system_region_fallback->currentIndex();
+  if (fallback_region_value > 2)
+    fallback_region_value = 4;
+  Config::SetBase<int>(Config::MAIN_WII_FALLBACK_REGION, fallback_region_value);
 }
 
 void WiiPane::ValidateSelectionState()

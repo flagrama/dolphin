@@ -50,6 +50,7 @@ extern const ConfigInfo<std::string> MAIN_BBA_MAC;
 ConfigInfo<u32> GetInfoForSIDevice(u32 channel);
 ConfigInfo<bool> GetInfoForAdapterRumble(u32 channel);
 ConfigInfo<bool> GetInfoForSimulateKonga(u32 channel);
+extern const ConfigInfo<int> MAIN_WII_FALLBACK_REGION;
 extern const ConfigInfo<bool> MAIN_WII_SD_CARD;
 extern const ConfigInfo<bool> MAIN_WII_SD_CARD_WRITABLE;
 extern const ConfigInfo<bool> MAIN_WII_KEYBOARD;
