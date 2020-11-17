@@ -10,6 +10,8 @@
 #include <QObject>
 #include <QSettings>
 
+#include "DiscIO/Enums.h"
+
 namespace Core
 {
 enum class State;
@@ -140,8 +142,8 @@ public:
   void SetAutoUpdateTrack(const QString& mode);
 
   // Fallback Region Override
-  QString GetFallbackRegionOverride() const;
-  void SetFallbackRegionOverride(const QString& region);
+  DiscIO::Region GetFallbackRegionOverride() const;
+  void SetFallbackRegionOverride(const DiscIO::Region& region);
 
   // Analytics
   bool IsAnalyticsEnabled() const;
@@ -182,7 +184,7 @@ signals:
   void DebugModeToggled(bool enabled);
   void DebugFontChanged(QFont font);
   void AutoUpdateTrackChanged(const QString& mode);
-  void FallbackRegionOverrideChanged(const QString& region);
+  void FallbackRegionOverrideChanged(const DiscIO::Region& region);
   void AnalyticsToggled(bool enabled);
   void DevicesChanged();
   void SDCardInsertionChanged(bool inserted);

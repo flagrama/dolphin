@@ -13,6 +13,7 @@
 #include "Core/HW/SI/SI_Device.h"
 #include "Core/PowerPC/PowerPC.h"
 #include "VideoCommon/VideoBackendBase.h"
+#include "DiscIO/Enums.h"
 
 namespace Config
 {
@@ -106,7 +107,7 @@ const Info<std::string> MAIN_PERF_MAP_DIR{{System::Main, "Core", "PerfMapDir"}, 
 const Info<bool> MAIN_CUSTOM_RTC_ENABLE{{System::Main, "Core", "EnableCustomRTC"}, false};
 // Default to seconds between 1.1.1970 and 1.1.2000
 const Info<u32> MAIN_CUSTOM_RTC_VALUE{{System::Main, "Core", "CustomRTCValue"}, 946684800};
-const Info<std::string> MAIN_FALLBACK_REGION_OVERRIDE{{System::Main, "Core", "FallbackRegionOverride"}, ""};
+const Info<DiscIO::Region> MAIN_FALLBACK_REGION_OVERRIDE{{System::Main, "Core", "FallbackRegionOverride"}, DiscIO::Region::Unknown};
 const Info<bool> MAIN_AUTO_DISC_CHANGE{{System::Main, "Core", "AutoDiscChange"}, false};
 const Info<bool> MAIN_ALLOW_SD_WRITES{{System::Main, "Core", "WiiSDCardAllowWrites"}, true};
 const Info<bool> MAIN_ENABLE_SAVESTATES{{System::Main, "Core", "EnableSaveStates"}, false};

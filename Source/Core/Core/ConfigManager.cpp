@@ -515,7 +515,7 @@ void SConfig::LoadCoreSettings(IniFile& ini)
   core->Get("EnableCustomRTC", &bEnableCustomRTC, false);
   // Default to seconds between 1.1.1970 and 1.1.2000
   core->Get("CustomRTCValue", &m_customRTCValue, 946684800);
-  core->Get("FallbackRegionOverride", &m_fallback_region_override, "");
+  core->Get("FallbackRegionOverride", &m_fallback_region_override, DiscIO::Region::Unknown);
 }
 
 void SConfig::LoadMovieSettings(IniFile& ini)
@@ -932,17 +932,10 @@ bool SConfig::SetPathsAndGameMetadata(const BootParameters& boot)
 DiscIO::Region SConfig::GetFallbackRegion()
 {
   // Fall back to the override option if set
-  if (SConfig::GetInstance().m_fallback_region_override != "")
+  const DiscIO::Region fallback = SConfig::GetInstance().m_fallback_region_override;
+  if (fallback != DiscIO::Region::Unknown)
   {
-    const std::string fallback = SConfig::GetInstance().m_fallback_region_override;
-    if (fallback == "ntsc-j")
-      return DiscIO::Region::NTSC_J;
-    else if (fallback == "ntsc-u")
-      return DiscIO::Region::NTSC_U;
-    else if (fallback == "pal")
-      return DiscIO::Region::PAL;
-    else
-      return DiscIO::Region::NTSC_K;
+    return fallback;
   }
 
   // Fall back to the system menu region, if possible.

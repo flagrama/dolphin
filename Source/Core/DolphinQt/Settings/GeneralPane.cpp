@@ -47,12 +47,6 @@ constexpr int FALLBACK_REGION_OVERRIDE_NTSCU_INDEX = 2;
 constexpr int FALLBACK_REGION_OVERRIDE_PAL_INDEX = 3;
 constexpr int FALLBACK_REGION_OVERRIDE_NTSCK_INDEX = 4;
 
-constexpr const char* FALLBACK_REGION_OVERRIDE_DISABLE_STRING = "";
-constexpr const char* FALLBACK_REGION_OVERRIDE_NTSCJ_STRING = "ntsc-j";
-constexpr const char* FALLBACK_REGION_OVERRIDE_NTSCU_STRING = "ntsc-u";
-constexpr const char* FALLBACK_REGION_OVERRIDE_PAL_STRING = "pal";
-constexpr const char* FALLBACK_REGION_OVERRIDE_NTSCK_STRING = "ntsc-k";
-
 GeneralPane::GeneralPane(QWidget* parent) : QWidget(parent)
 {
   CreateLayout();
@@ -263,18 +257,18 @@ void GeneralPane::LoadConfig()
     m_combobox_speedlimit->setCurrentIndex(selection);
   m_checkbox_dualcore->setChecked(SConfig::GetInstance().bCPUThread);
 
-  const auto fallback = Settings::Instance().GetFallbackRegionOverride().toStdString();
+  const auto fallback = Settings::Instance().GetFallbackRegionOverride();
 
-  if (fallback == FALLBACK_REGION_OVERRIDE_DISABLE_STRING)
-    m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_DISABLE_INDEX);
-  else if (fallback == FALLBACK_REGION_OVERRIDE_NTSCJ_STRING)
+  if (fallback == DiscIO::Region::NTSC_J)
     m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_NTSCJ_INDEX);
-  else if (fallback == FALLBACK_REGION_OVERRIDE_NTSCU_STRING)
+  else if (fallback == DiscIO::Region::NTSC_U)
     m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_NTSCU_INDEX);
-  else if (fallback == FALLBACK_REGION_OVERRIDE_PAL_STRING)
+  else if (fallback == DiscIO::Region::PAL)
     m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_PAL_INDEX);
-  else
+  else if (fallback == DiscIO::Region::NTSC_K)
     m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_NTSCK_INDEX);
+  else
+    m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_DISABLE_INDEX);
 }
 
 static QString UpdateTrackFromIndex(int index)
@@ -300,26 +294,26 @@ static QString UpdateTrackFromIndex(int index)
   return value;
 }
 
-static QString UpdateFallbackRegionOverrideFromIndex(int index)
+static DiscIO::Region UpdateFallbackRegionOverrideFromIndex(int index)
 {
-  QString value;
+  DiscIO::Region value = DiscIO::Region::Unknown;
 
   switch (index)
   {
   case FALLBACK_REGION_OVERRIDE_DISABLE_INDEX:
-    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_DISABLE_STRING);
+    value = DiscIO::Region::Unknown;
     break;
   case FALLBACK_REGION_OVERRIDE_NTSCJ_INDEX:
-    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_NTSCJ_STRING);
+    value = DiscIO::Region::NTSC_J;
     break;
   case FALLBACK_REGION_OVERRIDE_NTSCU_INDEX:
-    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_NTSCU_STRING);
+    value = DiscIO::Region::NTSC_U;
     break;
   case FALLBACK_REGION_OVERRIDE_PAL_INDEX:
-    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_PAL_STRING);
+    value = DiscIO::Region::PAL;
     break;
   case FALLBACK_REGION_OVERRIDE_NTSCK_INDEX:
-    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_NTSCK_STRING);
+    value = DiscIO::Region::NTSC_K;
     break;
   }
 
