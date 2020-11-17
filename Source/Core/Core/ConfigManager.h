@@ -308,6 +308,9 @@ struct SConfig
   std::string m_auto_update_track;
   std::string m_auto_update_hash_override;
 
+  // Fallback Region Override setting
+  std::string m_fallback_region_override;
+
   SConfig(const SConfig&) = delete;
   SConfig& operator=(const SConfig&) = delete;
   SConfig(SConfig&&) = delete;

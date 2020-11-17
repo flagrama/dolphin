@@ -139,6 +139,10 @@ public:
   QString GetAutoUpdateTrack() const;
   void SetAutoUpdateTrack(const QString& mode);
 
+  // Fallback Region Override
+  QString GetFallbackRegionOverride() const;
+  void SetFallbackRegionOverride(const QString& region);
+
   // Analytics
   bool IsAnalyticsEnabled() const;
   void SetAnalyticsEnabled(bool enabled);
@@ -178,6 +182,7 @@ signals:
   void DebugModeToggled(bool enabled);
   void DebugFontChanged(QFont font);
   void AutoUpdateTrackChanged(const QString& mode);
+  void FallbackRegionOverrideChanged(const QString& region);
   void AnalyticsToggled(bool enabled);
   void DevicesChanged();
   void SDCardInsertionChanged(bool inserted);

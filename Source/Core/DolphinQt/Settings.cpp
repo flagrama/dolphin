@@ -510,6 +510,22 @@ QString Settings::GetAutoUpdateTrack() const
   return QString::fromStdString(SConfig::GetInstance().m_auto_update_track);
 }
 
+void Settings::SetFallbackRegionOverride(const QString& region)
+{
+  if (region == GetFallbackRegionOverride())
+    return;
+
+  SConfig::GetInstance().m_fallback_region_override = region.toStdString();
+  std::string stdRegion = region.toStdString();
+
+  emit FallbackRegionOverrideChanged(region);
+}
+
+QString Settings::GetFallbackRegionOverride() const
+{
+  return QString::fromStdString(SConfig::GetInstance().m_fallback_region_override);
+}
+
 void Settings::SetAnalyticsEnabled(bool enabled)
 {
   if (enabled == IsAnalyticsEnabled())

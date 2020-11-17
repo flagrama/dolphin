@@ -41,6 +41,18 @@ constexpr const char* AUTO_UPDATE_STABLE_STRING = "stable";
 constexpr const char* AUTO_UPDATE_BETA_STRING = "beta";
 constexpr const char* AUTO_UPDATE_DEV_STRING = "dev";
 
+constexpr int FALLBACK_REGION_OVERRIDE_DISABLE_INDEX = 0;
+constexpr int FALLBACK_REGION_OVERRIDE_NTSCJ_INDEX = 1;
+constexpr int FALLBACK_REGION_OVERRIDE_NTSCU_INDEX = 2;
+constexpr int FALLBACK_REGION_OVERRIDE_PAL_INDEX = 3;
+constexpr int FALLBACK_REGION_OVERRIDE_NTSCK_INDEX = 4;
+
+constexpr const char* FALLBACK_REGION_OVERRIDE_DISABLE_STRING = "";
+constexpr const char* FALLBACK_REGION_OVERRIDE_NTSCJ_STRING = "ntsc-j";
+constexpr const char* FALLBACK_REGION_OVERRIDE_NTSCU_STRING = "ntsc-u";
+constexpr const char* FALLBACK_REGION_OVERRIDE_PAL_STRING = "pal";
+constexpr const char* FALLBACK_REGION_OVERRIDE_NTSCK_STRING = "ntsc-k";
+
 GeneralPane::GeneralPane(QWidget* parent) : QWidget(parent)
 {
   CreateLayout();
@@ -63,6 +75,8 @@ void GeneralPane::CreateLayout()
   if (AutoUpdateChecker::SystemSupportsAutoUpdates())
     CreateAutoUpdate();
 
+  CreateFallbackRegionOverride();
+
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
   CreateAnalytics();
 #endif
@@ -81,6 +95,7 @@ void GeneralPane::OnEmulationStateChanged(Core::State state)
 #ifdef USE_DISCORD_PRESENCE
   m_checkbox_discord_presence->setEnabled(!running);
 #endif
+  m_combobox_fallback_region_override->setEnabled(!running);
 }
 
 void GeneralPane::ConnectLayout()
@@ -105,6 +120,11 @@ void GeneralPane::ConnectLayout()
   // Advanced
   connect(m_combobox_speedlimit, qOverload<int>(&QComboBox::currentIndexChanged),
           [this]() { OnSaveConfig(); });
+
+  connect(m_combobox_fallback_region_override, qOverload<int>(&QComboBox::currentIndexChanged),
+          this, &GeneralPane::OnSaveConfig);
+  connect(&Settings::Instance(), &Settings::FallbackRegionOverrideChanged, this,
+          &GeneralPane::LoadConfig);
 
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
   connect(&Settings::Instance(), &Settings::AnalyticsToggled, this, &GeneralPane::LoadConfig);
@@ -179,6 +199,24 @@ void GeneralPane::CreateAutoUpdate()
     m_combobox_update_track->addItem(option);
 }
 
+void GeneralPane::CreateFallbackRegionOverride()
+{
+  auto* fallback_region_override_group = new QGroupBox(tr("Fallback Region Override"));
+  auto* layout = new QFormLayout;
+  fallback_region_override_group->setLayout(layout);
+  m_main_layout->addWidget(fallback_region_override_group);
+
+  layout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
+  layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
+  m_combobox_fallback_region_override = new QComboBox(this);
+
+  layout->addRow(tr("Fallback Region:"), m_combobox_fallback_region_override);
+
+  for (const QString& option : {tr("Disabled"), tr("NTSC-J"), tr("NTSC-U"), tr("PAL"), tr("NTSC-K")})
+    m_combobox_fallback_region_override->addItem(option);
+}
+
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
 void GeneralPane::CreateAnalytics()
 {
@@ -224,6 +262,19 @@ void GeneralPane::LoadConfig()
   if (selection < m_combobox_speedlimit->count())
     m_combobox_speedlimit->setCurrentIndex(selection);
   m_checkbox_dualcore->setChecked(SConfig::GetInstance().bCPUThread);
+
+  const auto fallback = Settings::Instance().GetFallbackRegionOverride().toStdString();
+
+  if (fallback == FALLBACK_REGION_OVERRIDE_DISABLE_STRING)
+    m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_DISABLE_INDEX);
+  else if (fallback == FALLBACK_REGION_OVERRIDE_NTSCJ_STRING)
+    m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_NTSCJ_INDEX);
+  else if (fallback == FALLBACK_REGION_OVERRIDE_NTSCU_STRING)
+    m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_NTSCU_INDEX);
+  else if (fallback == FALLBACK_REGION_OVERRIDE_PAL_STRING)
+    m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_PAL_INDEX);
+  else
+    m_combobox_fallback_region_override->setCurrentIndex(FALLBACK_REGION_OVERRIDE_NTSCK_INDEX);
 }
 
 static QString UpdateTrackFromIndex(int index)
@@ -243,6 +294,32 @@ static QString UpdateTrackFromIndex(int index)
     break;
   case AUTO_UPDATE_DEV_INDEX:
     value = QString::fromStdString(AUTO_UPDATE_DEV_STRING);
+    break;
+  }
+
+  return value;
+}
+
+static QString UpdateFallbackRegionOverrideFromIndex(int index)
+{
+  QString value;
+
+  switch (index)
+  {
+  case FALLBACK_REGION_OVERRIDE_DISABLE_INDEX:
+    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_DISABLE_STRING);
+    break;
+  case FALLBACK_REGION_OVERRIDE_NTSCJ_INDEX:
+    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_NTSCJ_STRING);
+    break;
+  case FALLBACK_REGION_OVERRIDE_NTSCU_INDEX:
+    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_NTSCU_STRING);
+    break;
+  case FALLBACK_REGION_OVERRIDE_PAL_INDEX:
+    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_PAL_STRING);
+    break;
+  case FALLBACK_REGION_OVERRIDE_NTSCK_INDEX:
+    value = QString::fromStdString(FALLBACK_REGION_OVERRIDE_NTSCK_STRING);
     break;
   }
 
@@ -277,6 +354,8 @@ void GeneralPane::OnSaveConfig()
   Config::SetBase(Config::MAIN_AUTO_DISC_CHANGE, m_checkbox_auto_disc_change->isChecked());
   Config::SetBaseOrCurrent(Config::MAIN_ENABLE_CHEATS, m_checkbox_cheats->isChecked());
   settings.m_EmulationSpeed = m_combobox_speedlimit->currentIndex() * 0.1f;
+  Settings::Instance().SetFallbackRegionOverride(
+      UpdateFallbackRegionOverrideFromIndex(m_combobox_fallback_region_override->currentIndex()));
 
   settings.SaveSettings();
 }
