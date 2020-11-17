@@ -941,6 +941,19 @@ DiscIO::Region SConfig::GetFallbackRegion()
       return region;
   }
 
+  if (SConfig::GetInstance().m_fallback_region_override != "")
+  {
+    const std::string fallback = SConfig::GetInstance().m_fallback_region_override;
+    if (fallback == "ntsc-j")
+      return DiscIO::Region::NTSC_J;
+    else if (fallback == "ntsc-u")
+      return DiscIO::Region::NTSC_U;
+    else if (fallback == "pal")
+      return DiscIO::Region::PAL;
+    else
+      return DiscIO::Region::NTSC_K;
+  }
+
   // Fall back to PAL.
   return DiscIO::Region::PAL;
 }
