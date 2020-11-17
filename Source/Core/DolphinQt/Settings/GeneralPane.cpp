@@ -207,7 +207,8 @@ void GeneralPane::CreateFallbackRegionOverride()
 
   layout->addRow(tr("Fallback Region:"), m_combobox_fallback_region_override);
 
-  for (const QString& option : {tr("Disabled"), tr("NTSC-J"), tr("NTSC-U"), tr("PAL"), tr("NTSC-K")})
+  for (const QString& option :
+       {tr("Disabled"), tr("NTSC-J"), tr("NTSC-U"), tr("PAL"), tr("NTSC-K")})
     m_combobox_fallback_region_override->addItem(option);
 }
 
