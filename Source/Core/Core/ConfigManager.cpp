@@ -931,16 +931,7 @@ bool SConfig::SetPathsAndGameMetadata(const BootParameters& boot)
 
 DiscIO::Region SConfig::GetFallbackRegion()
 {
-  // Fall back to the system menu region, if possible.
-  IOS::HLE::Kernel ios;
-  const IOS::ES::TMDReader system_menu_tmd = ios.GetES()->FindInstalledTMD(Titles::SYSTEM_MENU);
-  if (system_menu_tmd.IsValid())
-  {
-    const DiscIO::Region region = system_menu_tmd.GetRegion();
-    if (region != DiscIO::Region::Unknown)
-      return region;
-  }
-
+  // Fall back to the override option if set
   if (SConfig::GetInstance().m_fallback_region_override != "")
   {
     const std::string fallback = SConfig::GetInstance().m_fallback_region_override;
@@ -952,6 +943,16 @@ DiscIO::Region SConfig::GetFallbackRegion()
       return DiscIO::Region::PAL;
     else
       return DiscIO::Region::NTSC_K;
+  }
+
+  // Fall back to the system menu region, if possible.
+  IOS::HLE::Kernel ios;
+  const IOS::ES::TMDReader system_menu_tmd = ios.GetES()->FindInstalledTMD(Titles::SYSTEM_MENU);
+  if (system_menu_tmd.IsValid())
+  {
+    const DiscIO::Region region = system_menu_tmd.GetRegion();
+    if (region != DiscIO::Region::Unknown)
+      return region;
   }
 
   // Fall back to PAL.
