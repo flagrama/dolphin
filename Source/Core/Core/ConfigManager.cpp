@@ -11,6 +11,7 @@
 #include <sstream>
 #include <variant>
 
+#include <Core/Config/MainSettings.h>
 #include <fmt/format.h>
 
 #include "AudioCommon/AudioCommon.h"
@@ -246,7 +247,6 @@ void SConfig::SaveCoreSettings(IniFile& ini)
   core->Set("PerfMapDir", m_perfDir);
   core->Set("EnableCustomRTC", bEnableCustomRTC);
   core->Set("CustomRTCValue", m_customRTCValue);
-  core->Set("FallbackRegionOverride", m_fallback_region_override);
 }
 
 void SConfig::SaveMovieSettings(IniFile& ini)
@@ -515,7 +515,6 @@ void SConfig::LoadCoreSettings(IniFile& ini)
   core->Get("EnableCustomRTC", &bEnableCustomRTC, false);
   // Default to seconds between 1.1.1970 and 1.1.2000
   core->Get("CustomRTCValue", &m_customRTCValue, 946684800);
-  core->Get("FallbackRegionOverride", &m_fallback_region_override, DiscIO::Region::Unknown);
 }
 
 void SConfig::LoadMovieSettings(IniFile& ini)
@@ -932,7 +931,7 @@ bool SConfig::SetPathsAndGameMetadata(const BootParameters& boot)
 DiscIO::Region SConfig::GetFallbackRegion()
 {
   // Fall back to the override option if set
-  const DiscIO::Region fallback = SConfig::GetInstance().m_fallback_region_override;
+  const DiscIO::Region fallback = Config::Get(Config::MAIN_FALLBACK_REGION_OVERRIDE);
   if (fallback != DiscIO::Region::Unknown)
   {
     return fallback;

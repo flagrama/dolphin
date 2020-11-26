@@ -515,14 +515,14 @@ void Settings::SetFallbackRegionOverride(const DiscIO::Region& region)
   if (region == GetFallbackRegionOverride())
     return;
 
-  SConfig::GetInstance().m_fallback_region_override = region;
+  Config::SetBase(Config::MAIN_FALLBACK_REGION_OVERRIDE, region);
 
   emit FallbackRegionOverrideChanged(region);
 }
 
 DiscIO::Region Settings::GetFallbackRegionOverride() const
 {
-  return SConfig::GetInstance().m_fallback_region_override;
+  return Config::Get(Config::MAIN_FALLBACK_REGION_OVERRIDE);
 }
 
 void Settings::SetAnalyticsEnabled(bool enabled)
