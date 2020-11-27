@@ -196,16 +196,26 @@ void GeneralPane::CreateAutoUpdate()
 void GeneralPane::CreateFallbackRegionOverride()
 {
   auto* fallback_region_override_group = new QGroupBox(tr("Fallback Region Override"));
-  auto* layout = new QFormLayout;
+  auto* layout = new QVBoxLayout;
   fallback_region_override_group->setLayout(layout);
   m_main_layout->addWidget(fallback_region_override_group);
 
-  layout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
-  layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-
   m_combobox_fallback_region_override = new QComboBox(this);
 
-  layout->addRow(tr("Fallback Region:"), m_combobox_fallback_region_override);
+  auto* form_widget = new QWidget;
+  auto* form_layout = new QFormLayout;
+  form_widget->setLayout(form_layout);
+  form_layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+  form_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+  form_layout->addRow(tr("Fallback Region:"), m_combobox_fallback_region_override);
+  layout->addWidget(form_widget);
+
+  auto* fallback_region_override_description =
+      new QLabel(tr("Dolphin will use this for titles whose region cannot be determined "
+                    "automatically. If this option is disabled, the region of the installed Wii "
+                    "System Menu will be used, or if one cannot be found, the PAL region."));
+  fallback_region_override_description->setWordWrap(true);
+  layout->addWidget(fallback_region_override_description);
 
   for (const QString& option :
        {tr("Disabled"), tr("NTSC-J"), tr("NTSC-U"), tr("PAL"), tr("NTSC-K")})
