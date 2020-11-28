@@ -510,19 +510,19 @@ QString Settings::GetAutoUpdateTrack() const
   return QString::fromStdString(SConfig::GetInstance().m_auto_update_track);
 }
 
-void Settings::SetFallbackRegionOverride(const DiscIO::Region& region)
+void Settings::SetFallbackRegion(const DiscIO::Region& region)
 {
-  if (region == GetFallbackRegionOverride())
+  if (region == GetFallbackRegion())
     return;
 
-  Config::SetBase(Config::MAIN_FALLBACK_REGION_OVERRIDE, region);
+  Config::SetBase(Config::MAIN_FALLBACK_REGION, region);
 
-  emit FallbackRegionOverrideChanged(region);
+  emit FallbackRegionChanged(region);
 }
 
-DiscIO::Region Settings::GetFallbackRegionOverride() const
+DiscIO::Region Settings::GetFallbackRegion() const
 {
-  return Config::Get(Config::MAIN_FALLBACK_REGION_OVERRIDE);
+  return Config::Get(Config::MAIN_FALLBACK_REGION);
 }
 
 void Settings::SetAnalyticsEnabled(bool enabled)

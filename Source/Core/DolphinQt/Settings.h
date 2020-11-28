@@ -141,9 +141,9 @@ public:
   QString GetAutoUpdateTrack() const;
   void SetAutoUpdateTrack(const QString& mode);
 
-  // Fallback Region Override
-  DiscIO::Region GetFallbackRegionOverride() const;
-  void SetFallbackRegionOverride(const DiscIO::Region& region);
+  // Fallback Region
+  DiscIO::Region GetFallbackRegion() const;
+  void SetFallbackRegion(const DiscIO::Region& region);
 
   // Analytics
   bool IsAnalyticsEnabled() const;
@@ -184,7 +184,7 @@ signals:
   void DebugModeToggled(bool enabled);
   void DebugFontChanged(QFont font);
   void AutoUpdateTrackChanged(const QString& mode);
-  void FallbackRegionOverrideChanged(const DiscIO::Region& region);
+  void FallbackRegionChanged(const DiscIO::Region& region);
   void AnalyticsToggled(bool enabled);
   void DevicesChanged();
   void SDCardInsertionChanged(bool inserted);

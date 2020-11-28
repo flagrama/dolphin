@@ -48,7 +48,7 @@ bool IsSettingSaveable(const Config::Location& config_location)
       &Config::MAIN_MEM2_SIZE.location,
       &Config::MAIN_GFX_BACKEND.location,
       &Config::MAIN_ENABLE_SAVESTATES.location,
-      &Config::MAIN_FALLBACK_REGION_OVERRIDE.location,
+      &Config::MAIN_FALLBACK_REGION.location,
 
       // Main.Interface
 
