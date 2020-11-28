@@ -930,8 +930,7 @@ bool SConfig::SetPathsAndGameMetadata(const BootParameters& boot)
 
 DiscIO::Region SConfig::GetFallbackRegion()
 {
-  const DiscIO::Region fallback = Config::Get(Config::MAIN_FALLBACK_REGION);
-  return fallback;
+  return Config::Get(Config::MAIN_FALLBACK_REGION);
 }
 
 DiscIO::Language SConfig::GetCurrentLanguage(bool wii) const
