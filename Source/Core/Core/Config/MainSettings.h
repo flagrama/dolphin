@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <DiscIO/Enums.h>
 #include <string>
 
 #include "Common/Config/Config.h"
+#include "DiscIO/Enums.h"
 
 namespace PowerPC
 {

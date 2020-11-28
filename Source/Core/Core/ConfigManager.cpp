@@ -11,7 +11,6 @@
 #include <sstream>
 #include <variant>
 
-#include <Core/Config/MainSettings.h>
 #include <fmt/format.h>
 
 #include "AudioCommon/AudioCommon.h"
@@ -32,6 +31,7 @@
 #include "Core/Analytics.h"
 #include "Core/Boot/Boot.h"
 #include "Core/CommonTitles.h"
+#include "Core/Config/MainSettings.h"
 #include "Core/Config/SYSCONFSettings.h"
 #include "Core/ConfigLoaders/GameConfigLoader.h"
 #include "Core/Core.h"
